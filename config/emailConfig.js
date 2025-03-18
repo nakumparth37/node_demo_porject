@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const path = require('path');
+const logger = require('../utils/logger');
 
 
 const transporter = nodemailer.createTransport({
@@ -17,9 +18,9 @@ const transporter = nodemailer.createTransport({
 
 transporter.verify((error, success) => {
     if (error) {
-        console.error("SMTP Connection Error:", error);
+        logger.error("SMTP Connection Error:", error);
     } else {
-        console.log("SMTP Server is Ready to Send Emails");
+        logger.info("SMTP Server is Ready to Send Emails");
     }
 });
 

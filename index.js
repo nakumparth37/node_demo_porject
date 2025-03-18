@@ -6,6 +6,7 @@ const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const roleRotes = require('./routes/roleRoutes');
 const auth = require('./middleware/authMiddleware');
+const logger = require('./utils/logger');
 require("./events/eventListeners");
 
 const app = express();
@@ -27,11 +28,11 @@ app.use('/roles', auth.protect, auth.adminOnly, roleRotes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    logger.error(err.stack);
     res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
 });
 
 // Start the Server
 app.listen(port, () => {
-    console.log(`🚀 Server is running on port ${port}`);
+    logger.info(`🚀 Server is running on port ${port}`);
 });

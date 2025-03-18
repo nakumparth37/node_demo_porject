@@ -53,10 +53,9 @@ exports.checkPermission = (collection, action) => {
 
                 if (!Model) return res.status(400).json({ message: "Invalid collection" });
                 // Find the resource dynamically
-                console.log(req.params.id);
                 
                 const resource = await Model.findOne({ [`${collection.slice(0, -1)}ID`]: req.params.id });
-                console.log(resource);
+
                 if (!resource) {
                     return res.status(404).json({ message: "Resource not found" });
                 }

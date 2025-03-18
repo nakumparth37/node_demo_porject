@@ -1,4 +1,5 @@
 const transporter = require('../config/emailConfig');
+const logger = require('../utils/logger');
 
 exports.sendMail = async (toEmail, subject, template, context) => {
     try {
@@ -10,10 +11,10 @@ exports.sendMail = async (toEmail, subject, template, context) => {
             context: context
         };
         const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent:', info.messageId);
+        logger.info('Email sent:', info.messageId);
         return info;
     } catch (error) {
-        console.error('Error sending email:', error);
+        logger.error('Error sending email:', error);
         throw error;
     }
 }

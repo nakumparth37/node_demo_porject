@@ -21,6 +21,8 @@
     "mongoose": "^8.12.1",
     "mongoose-sequence": "^6.0.1",
     "nodemailer": "^6.10.0",
-    "nodemailer-express-handlebars": "^7.0.0"
+    "nodemailer-express-handlebars": "^7.0.0",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0"
   }
 }

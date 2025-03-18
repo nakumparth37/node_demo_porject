@@ -1,5 +1,6 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
+const logger = require('./utils/logger');
 
 (async () => {
     let testAccount = null;
@@ -7,7 +8,7 @@ const nodemailer = require('nodemailer');
     // If environment variables are not set, create a test Ethereal account
     if (!process.env.SMTP_HOST) {
         testAccount = await nodemailer.createTestAccount();
-        console.log('Using Ethereal test account:', testAccount);
+        logger.info('Using Ethereal test account:', testAccount);
     }
 
     // Create a SMTP transporter object
@@ -38,10 +39,10 @@ const nodemailer = require('nodemailer');
     // Send mail
     transporter.sendMail(message, (err, info) => {
         if (err) {
-            console.error('Error occurred:', err.message);
+            logger.error('Error occurred:', err.message);
             return process.exit(1);
         }
-        console.log('Message sent: %s', info.messageId);
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        logger.info('Message sent: %s', info.messageId);
+        logger.info('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     });
 })();
