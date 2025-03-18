@@ -74,14 +74,35 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
-        const user = await User.findOne({userID : req.params.id});
+        const user = await User.findOneAndDelete({userID : req.params.id});
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        res.status(200).json({ message: 'User deleted successfully' });
+        res.status(200).json({ message: 'User deleted successfully' , user: user});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getUsers = async (req, res) => {
+    try {
+        const {name, email, Role} = req.query;
+        let query = {};
+        if (name) query.name = { $regex: name, $options: 'i' };
+        if (email) query.email = { $regex: email, $options: 'i' };
+        if (Role) query.Role = Role;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const paginatedUsers = await paginate(User,page,limit,query,'-password',{userId: 'asc'});
+        res.status(200).json({
+            success: true,
+            message: 'Users fetched successfully',
+            ...paginatedUsers
+        });
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 
 

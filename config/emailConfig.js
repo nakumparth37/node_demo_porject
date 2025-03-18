@@ -13,8 +13,6 @@ const transporter = nodemailer.createTransport({
     tls: {
         rejectUnauthorized: false,
     },
-    debug: true,
-    logger: true,
 });
 
 transporter.verify((error, success) => {

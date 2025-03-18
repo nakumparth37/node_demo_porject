@@ -34,10 +34,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: 'Not Provided'
     },
-    role: {
-        type: String,
-        enum: ['admin', 'vendor', 'user'],
-        default: 'user'
+    roleID: { 
+        type: Number, 
+        ref: "Role", 
+        required: true, 
+        default: 3 
     }
 }, { timestamps: true });
 UserSchema.plugin(AutoIncrement,{inc_field: 'userID'})

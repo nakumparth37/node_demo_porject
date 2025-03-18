@@ -5,9 +5,12 @@ const auth = require('../middleware/authMiddleware');
 const { validateCreateUser , validateUpdateUser } = require('../middleware/validateUser');
 
 // Routes
-router.get('/all', auth.adminOnly, userController.getAllUsers);
 router.get('/:id', userController.getUserById);
-router.put('/update/:id', validateCreateUser, userController.updateUser);
-router.delete('/delete/:id', validateUpdateUser, userController.deleteUser);
+router.put('/update/:id', auth.checkPermission('users', 'update'),validateCreateUser, userController.updateUser);
+
+router.use(auth.adminOnly);
+router.get('/all', userController.getAllUsers);
+router.delete('/delete/:id', userController.deleteUser);
+router.get('/', userController.getUsers);
 
 module.exports = router;

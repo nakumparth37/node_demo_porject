@@ -70,24 +70,34 @@ exports.getMoviesByMovieId = async (req, res) => {
 // Get All Movies with Pagination & Filtering
 exports.getMovies = async (req, res) => {
     try {
-        const {name, genre, year, director, rating, page = 1, limit = 10} = req.query;
+        const {name, genre, year, director, rating, page = 1, limit = 10, createdBy} = req.query;
         let filter = {} ;
         if (name) filter.title = new RegExp(name, 'i');
         if (genre) filter.genres = {$all : genre.split(',')};
         if (year) filter.year = parseInt(year);
         if (director) filter.directors = new RegExp(director);
         if (rating) filter['imdb.rating'] = {$gte : parseInt(rating)};
+        if (createdBy) filter.createdBy = {$eq : parseInt(createdBy)};
 
         const pageNumber = Math.max(1, parseInt(page));
         const itemInPage = Math.max(1,parseInt(limit));
         const skip = (pageNumber - 1) * itemInPage;
 
         let movies = await Movie.find(filter).select({
-            title: 1, 
-            year: 1, 
+            title: 1,
+            plot: 1,
+            poster: 1,
+            rated: 1,
+            released: 1,
+            runtime: 1,
+            languages: 1,
+            countries: 1,
             genres: 1, 
+            year: 1, 
             directors: 1, 
             'imdb.rating': 1,
+            createdBy : 1,
+
         })
         .skip(skip)
         .limit(itemInPage);
@@ -170,3 +180,27 @@ exports.deleteMovie = async (req, res) => {
         res.status(500).json({ error : error.message })
     }
 }
+
+// exports.assignMovieIDs = async (req, res) => {
+//     try {
+//         const moviesWithoutID = await Movie.find({ movieID: { $exists: false } }).sort({ createdAt: 1 });
+
+//         if (moviesWithoutID.length === 0) {
+//             return res.json({ message: "All movies already have a movieID." });
+//         }
+
+//         let counter = await Movie.countDocuments(); // Get total count to start numbering correctly
+//         const bulkUpdates = moviesWithoutID.map(movie => ({
+//             updateOne: {
+//                 filter: { _id: movie._id },
+//                 update: { $set: { movieID: ++counter } }
+//             }
+//         }));
+
+//         await Movie.bulkWrite(bulkUpdates);
+
+//         res.json({ message: `Assigned movieID to ${moviesWithoutID.length} movies.` });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };

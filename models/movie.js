@@ -3,13 +3,10 @@ const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const movieSchema = new mongoose.Schema(
   {
-    movieID: { type: Number, unique: true },
+    movieID: { type: Number, unique: true, sparse: true }, // Allow sparse unique IDs
     title: { type: String, required: true, unique: true },
     plot: { type: String, required: true },
-    poster: {
-      type: String,
-      default: "movieDefault.webp",
-    },
+    poster: { type: String, default: "movieDefault.webp" },
     rated: String,
     released: { type: Date, required: true },
     runtime: { type: Number, required: true },
@@ -29,7 +26,7 @@ const movieSchema = new mongoose.Schema(
       rating: { type: Number, required: true },
       votes: { type: Number, required: true },
     },
-    languages: { type: [String], required: true, default : ['English'] },
+    languages: { type: [String], required: true, default: ["English"] },
     lastupdated: String,
     metacritic: Number,
     num_mflix_comments: Number,
@@ -43,9 +40,12 @@ const movieSchema = new mongoose.Schema(
     },
     type: { type: String, required: true },
     year: { type: Number, required: true },
+    createdBy: { type: Number, ref: "User", required: true },
   },
-  { timeseries: true }
+  { timestamps: true }
 );
+
 movieSchema.plugin(AutoIncrement, { inc_field: "movieID" });
+
 const Movie = mongoose.model("Movie", movieSchema);
 module.exports = Movie;

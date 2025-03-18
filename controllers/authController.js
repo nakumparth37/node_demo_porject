@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const { generateToken } = require('../services/authService');
 const { check, validationResult } = require('express-validator');
-const { sendMail }= require('../services/emailService');
+const eventEmitter = require('../events/eventEmitter');
 
 
 exports.register  = async (req, res) => {
@@ -12,8 +12,7 @@ exports.register  = async (req, res) => {
         if (existingUser) return res.status(400).json({ message: `Email ${email} already in use`});
 
         const newUser = await User.create({ name, email, password, role, address });
-        console.log(newUser.email);
-        await sendMail(newUser.email, 'Welcome to Our App!', 'welcomeEmail', { name: newUser.name });
+        eventEmitter.emit('userRegistered', newUser);
         res.status(201).json({
             message: 'User registered successfully',
             user: { id: newUser.userID, 
